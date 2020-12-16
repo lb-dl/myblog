@@ -1,29 +1,30 @@
 from django.shortcuts import get_object_or_404, render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.views.generic import ListView
 
 from myblog.models import Post
 
 
-def PostList(request):
-    # posts = Post.published.all()
+class PostListView(ListView):
 
-    object_list = Post.published.all()
+    # build a generic QuerySet
+    queryset = Post.published.all()
+    # use conrext variable 'posts' for a query results
+    context_object_name = 'posts'
+    # 3 posts in each page
+    paginate_by = 3
+    # use a custom template name
+    template_name = 'blog/post/list.html'
 
-    # instantinate a paginator class with a number of objects to be displayed
-    paginator = Paginator(object_list, 3) # 3 posts in each page
-    page = request.GET.get('page') # get the current page
-    try:
-        posts = paginator.page(page) # obtain the objects of a desired page
-    except PageNotAnInteger: # if the page isn't an integer deliver the first one
-        posts = paginator.page(1)
-    except EmptyPage:
-        posts = paginator.page(paginator.num_pages)
-    return render(
-        request,
-        'blog/post/list.html',
-        {'page': page, # pass page number and retrieved objects to the template
-        'posts': posts},
-    )
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['GET_PARAMS'] = '&'.join(
+            f'{key}={value}'
+            for key, value in self.request.GET.items()
+            if key != 'page'
+        )
+        context['object_count'] = context['object_list'].count()
+        return context
 
 
 def SinglePost(request, year, month, day, post):
