@@ -1,0 +1,4 @@
+env_blog
+__pycache__/
+.idea/
+static_content/
