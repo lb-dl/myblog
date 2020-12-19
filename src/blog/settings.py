@@ -118,8 +118,8 @@ STATICFILES_DIRS = [
 ]
 
 # sending email
-EMAIL_HOST_USER = 'lbdltest77@gmail.com'
-EMAIL_HOST_PASSWORD = 'django77'
+EMAIL_HOST_USER = 'djangoproject@gmail.com'
+EMAIL_HOST_PASSWORD = 'fsdfdfhbdf\zhbfdndzfndf'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
