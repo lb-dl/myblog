@@ -5,6 +5,8 @@ from django.urls import reverse
 
 from django.contrib.auth.models import User
 
+from taggit.managers import TaggableManager
+
 # create a custom manager to retrieve all posts with the published status
 
 class PublishedManager(models.Manager):
@@ -36,6 +38,9 @@ class Post(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updates = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='draft')
+
+    # to be able to add, retrieve and remove tags from Post objects
+    tags = TaggableManager()
 
     class Meta:
         # sort 'published' in descending order, so post published recently will appear first

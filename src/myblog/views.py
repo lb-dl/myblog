@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, render
-# from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic import ListView
 
 from myblog.models import Post
@@ -7,6 +7,8 @@ from myblog.models import Post
 from .forms import CommentForm, EmailPostForm
 
 from django.core.mail import send_mail
+
+from taggit.models import Tag
 
 
 class PostListView(ListView):
@@ -92,3 +94,33 @@ def PostShare(request, post_id):
         # having a Get request create a new form instance to display an empty form in the template
         form = EmailPostForm
     return render(request, 'blog/post/share.html', {'post': post, 'form': form, 'sent': sent})
+
+
+def PostList(request, tag_slug=None):
+    # the optional parameter 'tag_slug' will be passed in the URL
+
+    object_list = Post.published.all()
+    tag = None
+
+    # check if there's a given tag_slug
+    if tag_slug:
+        tag = get_object_or_404(Tag, slug=tag_slug)
+        # filter the list of the posts by the ones that contain the given tag
+        object_list = object_list.filter(tags__in=[tag])
+
+    # instantinate a paginator class with a number of objects to be displayed
+    paginator = Paginator(object_list, 3) # 3 posts in each page
+    page = request.GET.get('page') # get the current page
+    try:
+        posts = paginator.page(page) # obtain the objects of a desired page
+    except PageNotAnInteger: # if the page isn't an integer deliver the first one
+        posts = paginator.page(1)
+    except EmptyPage:
+        posts = paginator.page(paginator.num_pages)
+    return render(
+        request,
+        'blog/post/list.html',
+        {'page': page, # pass page number and retrieved objects to the template
+        'posts': posts,
+        'tag': tag},
+    )
