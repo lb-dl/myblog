@@ -7,6 +7,7 @@ from myblog.models import Post
 from .forms import CommentForm, EmailPostForm
 
 from django.core.mail import send_mail
+from django.db.models import Count
 
 from taggit.models import Tag
 
@@ -61,12 +62,22 @@ def SinglePost(request, year, month, day, post):
     # build a form instance if the view is called by a GET request
     else:
         comment_form = CommentForm()
+    # retrieve a list of ids for all tags of the current post. value_list returns a tuple of ids
+    post_tags_ids = post.tags.values_list('id', flat=True)
+    # get all posts that contain any of these tags, excluding the current post
+    similar_posts = Post.published.filter(tags__in=post_tags_ids).exclude(id=post.id)
+    # use Count() to generate the number of tags shared with all the tags queried
+    # to display resent posts first for the post with the same number of shared tags
+    # retrieve only the first four posts
+    similar_posts = similar_posts.annotate(same_tags=Count('tags'))\
+                        .order_by('-same_tags', '-publish')[:4]
 
     return render(request, 'blog/post/single.html',
         {'post': post,
          'comments': comments,
          'new_comment': new_comment,
-         'comment_form': comment_form
+         'comment_form': comment_form,
+         'similar_posts': similar_posts
          })
 
 
