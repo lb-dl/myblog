@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'myblog.apps.MyblogConfig',
     'django_extensions',
     'debug_toolbar',
+    'taggit',
 ]
 
 MIDDLEWARE = [
@@ -116,3 +117,18 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static')
+
+# sending email
+EMAIL_HOST_USER = 'djangoproject20@gmail.com'
+EMAIL_HOST_PASSWORD = '051105L;fyuJ'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+# if DEBUG:
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# DEFAULT_FROM_EMAIL = 'example@ex.com'
+# DOMAIN = 'http://127.0.0.1:8001'
