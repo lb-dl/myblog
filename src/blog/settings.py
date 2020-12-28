@@ -121,7 +121,7 @@ STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static')
 
 # sending email
 EMAIL_HOST_USER = 'djangoproject20@gmail.com'
-EMAIL_HOST_PASSWORD = '051105L;fyuJ'
+EMAIL_HOST_PASSWORD = '0ftf6r76rhgf'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
