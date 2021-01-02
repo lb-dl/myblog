@@ -21,6 +21,7 @@ INTERNAL_IPS = [
 
 ALLOWED_HOSTS = []
 
+SITE_ID = 1
 
 # Application definition
 
@@ -35,6 +36,8 @@ INSTALLED_APPS = [
     'django_extensions',
     'debug_toolbar',
     'taggit',
+    'django.contrib.sites',
+    'django.contrib.sitemaps',
 ]
 
 MIDDLEWARE = [
