@@ -6,6 +6,8 @@ from django.urls import include, path
 from django.contrib.sitemaps.views import sitemap
 from myblog.sitemaps import PostSitemap
 
+
+
 sitemaps = {'posts': PostSitemap, }
 
 urlpatterns = [
@@ -13,8 +15,7 @@ urlpatterns = [
     path('__debug__/', include(debug_toolbar.urls)),
     path('myblog/', include('myblog.urls', namespace='myblog')),
     path(
-        'sitemap.xml',
-        sitemap, {'sitemaps': sitemaps},
-        name= 'django.contrib.sitemaps.views.sitemap'
+        'sitemap.xml', sitemap, {'sitemaps': sitemaps},
+        name='django.contrib.sitemaps.views.sitemap'
     )
 ]
