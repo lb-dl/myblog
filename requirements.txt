@@ -4,3 +4,4 @@ ipython==7.19.0
 django-debug-toolbar==3.2
 django-taggit==1.2.0
 markdown==3.2.1
+psycopg2-binary==2.8.4
