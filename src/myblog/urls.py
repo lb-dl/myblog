@@ -15,4 +15,5 @@ urlpatterns = [
     path('<int:year>/<int:month>/<int:day>/<slug:post>/', views.SinglePost, name='single_post'),
     path('<int:post_id>/share', views.PostShare, name='post_share'),
     path('feed/', LatestPostsFeed(), name='post_feed'),
+    path('search/', views.post_search, name='post_search'),
     ]
