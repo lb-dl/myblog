@@ -1,10 +1,11 @@
 from django.shortcuts import get_object_or_404, render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic import ListView
+from django.contrib.postgres.search import SearchVector
 
 from myblog.models import Post
 
-from .forms import CommentForm, EmailPostForm
+from .forms import CommentForm, EmailPostForm, SearchForm
 
 from django.core.mail import send_mail
 from django.db.models import Count
@@ -135,3 +136,21 @@ def PostList(request, tag_slug=None):
         'posts': posts,
         'tag': tag},
     )
+
+def post_search(request):
+    # instantiate the SearchForm form
+    form = SearchForm()
+    query = None
+    results = []
+    # check if the form is submitted, looking for a query param in the request.Get dict
+    # using the GET method, so that the resulting URL includes the query param
+    if 'query' in request.GET:
+        # instantiate the submitted form with the submitted GET data
+        form = SearchForm(request.GET)
+        if form.is_valid():
+            query = form.cleaned_data['query']
+            # search for posts with a custom SearchVector instance built with title and body fields
+            results = Post.published.annotate(
+                search=SearchVector('title', 'body'),).filter(search=query)
+    return render(request, 'blog/post/search.html',
+                  {'form': form, 'query': query, 'results': results})
