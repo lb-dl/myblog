@@ -1,11 +1,10 @@
-from django.db import models
-
-from django.utils import timezone
-from django.urls import reverse
-
 from django.contrib.auth.models import User
+from django.db import models
+from django.urls import reverse
+from django.utils import timezone
 
 from taggit.managers import TaggableManager
+
 
 # create a custom manager to retrieve all posts with the published status
 
@@ -58,6 +57,7 @@ class Post(models.Model):
                              self.publish.day,
                              self.slug]
                        )
+
 
 class Comment(models.Model):
 

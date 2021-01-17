@@ -1,11 +1,11 @@
 import debug_toolbar
-from django.conf import settings
+
+# from django.conf import settings
 from django.contrib import admin
+from django.contrib.sitemaps.views import sitemap
 from django.urls import include, path
 
-from django.contrib.sitemaps.views import sitemap
 from myblog.sitemaps import PostSitemap
-
 
 
 sitemaps = {'posts': PostSitemap, }
