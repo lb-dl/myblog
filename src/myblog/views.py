@@ -1,17 +1,16 @@
-from django.shortcuts import get_object_or_404, render
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.views.generic import ListView
-from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.contrib.postgres.search import TrigramSimilarity
+from django.core.mail import send_mail
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.db.models import Count
+from django.shortcuts import get_object_or_404, render
+from django.views.generic import ListView
+# from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 
 from myblog.models import Post
 
-from .forms import CommentForm, EmailPostForm, SearchForm
-
-from django.core.mail import send_mail
-from django.db.models import Count
-
 from taggit.models import Tag
+
+from .forms import CommentForm, EmailPostForm, SearchForm
 
 
 class PostListView(ListView):
@@ -71,16 +70,15 @@ def SinglePost(request, year, month, day, post):
     # use Count() to generate the number of tags shared with all the tags queried
     # to display resent posts first for the post with the same number of shared tags
     # retrieve only the first four posts
-    similar_posts = similar_posts.annotate(same_tags=Count('tags'))\
-                        .order_by('-same_tags', '-publish')[:4]
+    similar_posts = similar_posts.annotate(same_tags=Count('tags')).order_by('-same_tags', '-publish')[:4]
 
-    return render(request, 'blog/post/single.html',
-        {'post': post,
-         'comments': comments,
-         'new_comment': new_comment,
-         'comment_form': comment_form,
-         'similar_posts': similar_posts
-         })
+    return render(request, 'blog/post/single.html', {
+        'post': post,
+        'comments': comments,
+        'new_comment': new_comment,
+        'comment_form': comment_form,
+        'similar_posts': similar_posts
+        })
 
 
 def PostShare(request, post_id):
@@ -122,21 +120,22 @@ def PostList(request, tag_slug=None):
         object_list = object_list.filter(tags__in=[tag])
 
     # instantinate a paginator class with a number of objects to be displayed
-    paginator = Paginator(object_list, 3) # 3 posts in each page
-    page = request.GET.get('page') # get the current page
+    paginator = Paginator(object_list, 3)  # 3 posts in each page
+    page = request.GET.get('page')  # get the current page
     try:
-        posts = paginator.page(page) # obtain the objects of a desired page
-    except PageNotAnInteger: # if the page isn't an integer deliver the first one
+        posts = paginator.page(page)  # obtain the objects of a desired page
+    except PageNotAnInteger:  # if the page isn't an integer deliver the first one
         posts = paginator.page(1)
     except EmptyPage:
         posts = paginator.page(paginator.num_pages)
     return render(
         request,
         'blog/post/list.html',
-        {'page': page, # pass page number and retrieved objects to the template
-        'posts': posts,
-        'tag': tag},
+        {'page': page,  # pass page number and retrieved objects to the template
+         'posts': posts,
+         'tag': tag},
     )
+
 
 def post_search(request):
     # instantiate the SearchForm form
@@ -159,7 +158,7 @@ def post_search(request):
             #    .filter(rank__gte=0.3).order_by('-rank')
 
             results = Post.published.annotate(
-                similarity = TrigramSimilarity('title', query),)\
+                similarity=TrigramSimilarity('title', query),)\
                 .filter(similarity__gt=0.1).order_by('-similarity')
     return render(request, 'blog/post/search.html',
                   {'form': form, 'query': query, 'results': results})
