@@ -6,4 +6,4 @@ install:
 script:
   - flake8 ./src
   - python3 ./src/manage.py check
-  - python3 ./src/manage.py makemigrations --check --dry-run
+# python3 ./src/manage.py makemigrations --check --dry-run
